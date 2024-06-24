@@ -18,7 +18,7 @@ import java.util.Properties;
 
 public class StartApp {
 
-    private static final String KAFKA_SERVER = "0.0.0.0:9092";
+    private static final String KAFKA_SERVER = "0.0.0.0";
 
     private static final Integer KAFKA_PORT = 9092;
 
