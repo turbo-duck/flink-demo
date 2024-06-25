@@ -1,6 +1,7 @@
 package icu.wzk.demo06;
 
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -9,10 +10,13 @@ import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.api.windowing.windows.GlobalWindow;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 import java.util.Random;
 
 
@@ -24,13 +28,27 @@ import java.util.Random;
 **/
 public class TumblingWindow {
 
+    private static final String KAFKA_SERVER = "0.0.0.0";
+
+    private static final Integer KAFKA_PORT = 9092;
+
+    private static final String KAFKA_TOPIC = "test";
+
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args) throws Exception {
         //设置执行环境，类似spark中初始化sparkContext
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-        DataStreamSource<String> dataStreamSource = env.socketTextStream("0.0.0.0", 9999);
+        // DataStreamSource<String> dataStreamSource = env.socketTextStream("0.0.0.0", 9999);
+
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", String.format("%s:%d", KAFKA_SERVER, KAFKA_PORT));
+        properties.setProperty("auto.offset.reset", "earliest");
+
+        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>(KAFKA_TOPIC, new SimpleStringSchema(), properties);
+        DataStreamSource<String> dataStreamSource = env.addSource(consumer);
+
         SingleOutputStreamOperator<Tuple2<String, Integer>> mapStream = dataStreamSource.map(new MapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public Tuple2<String, Integer> map(String value) throws Exception {
@@ -51,14 +69,14 @@ public class TumblingWindow {
 
         // =============== 时间驱动 ============================
         // 每隔10s划分一个窗口
-        WindowedStream<Tuple2<String, Integer>, String, TimeWindow> timeWindow = keyedStream
-                .window(TumblingProcessingTimeWindows.of(Time.seconds(10)));
-        timeWindow.apply(new MyTimeWindowFunction()).print();
+//        WindowedStream<Tuple2<String, Integer>, String, TimeWindow> timeWindow = keyedStream
+//                .window(TumblingProcessingTimeWindows.of(Time.seconds(10)));
+//        timeWindow.apply(new MyTimeWindowFunction()).print();
 
         // ================ 事件驱动 ============================
         // 每相隔3个事件(即三个相同key的数据), 划分一个窗口进行计算
-        // WindowedStream<Tuple2<String, Integer>, Tuple, GlobalWindow> countWindow = keyedStream.countWindow(3);
-        // countWindow.apply(new MyCountWindowFunction()).print();
+        WindowedStream<Tuple2<String, Integer>, String, GlobalWindow> countWindow = keyedStream.countWindow(3);
+        countWindow.apply(new MyCountWindowFunction()).print();
 
         env.execute();
     }
