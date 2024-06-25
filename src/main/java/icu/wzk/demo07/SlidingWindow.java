@@ -1,5 +1,6 @@
 package icu.wzk.demo07;
 
+import icu.wzk.demo06.MyCountWindowFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -57,7 +58,7 @@ public class SlidingWindow {
         WindowedStream<Tuple2<String, Integer>, String, GlobalWindow> countWindow = keyedStream
                 .countWindow(3, 2);
         countWindow.sum(1).print();
-
+        countWindow.apply(new MyCountWindowFunction()).print();
         env.execute();
     }
 
