@@ -29,3 +29,23 @@ kafka -> redis
 会话窗口
 - 时间驱动
 - 事件驱动
+
+
+# docker-compose
+
+## flink-one
+单节点
+
+## flink-ha
+高可用，多节点+ZK
+
+## flink-manay
+多节点
+
+## kafka
+Kafka+ZK 部署
+
+## Redis
+Redis部署
+
+
