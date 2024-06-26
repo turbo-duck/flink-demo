@@ -1,0 +1,92 @@
+version: '2'
+
+services:
+  zookeeper:
+    image: zookeeper:3.5
+    ports:
+      - "2181:2181"
+
+  jobmanager1:
+    image: 10.10.52.8/flink/flink
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager1
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+      - HIGH_AVAILABILITY=zookeeper
+      - HIGH_AVAILABILITY_ZOOKEEPER_QUORUM=zookeeper:2181
+      - HIGH_AVAILABILITY_STORAGE_DIR=file:///flink/ha/
+
+  jobmanager2:
+    image: 10.10.52.8/flink/flink
+    expose:
+      - "6123"
+    ports:
+      - "8082:8081"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager2
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+      - HIGH_AVAILABILITY=zookeeper
+      - HIGH_AVAILABILITY_ZOOKEEPER_QUORUM=zookeeper:2181
+      - HIGH_AVAILABILITY_STORAGE_DIR=file:///flink/ha/
+
+  taskmanager1:
+    image: 10.10.52.8/flink/flink
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager1
+      - jobmanager2
+    command: taskmanager
+    links:
+      - "jobmanager1:jobmanager1"
+      - "jobmanager2:jobmanager2"
+      - "zookeeper:zookeeper"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager1
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+      - HIGH_AVAILABILITY=zookeeper
+      - HIGH_AVAILABILITY_ZOOKEEPER_QUORUM=zookeeper:2181
+
+  taskmanager2:
+    image: 10.10.52.8/flink/flink
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager1
+      - jobmanager2
+    command: taskmanager
+    links:
+      - "jobmanager1:jobmanager1"
+      - "jobmanager2:jobmanager2"
+      - "zookeeper:zookeeper"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager1
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+      - HIGH_AVAILABILITY=zookeeper
+      - HIGH_AVAILABILITY_ZOOKEEPER_QUORUM=zookeeper:2181
+
+  taskmanager3:
+    image: 10.10.52.8/flink/flink
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager1
+      - jobmanager2
+    command: taskmanager
+    links:
+      - "jobmanager1:jobmanager1"
+      - "jobmanager2:jobmanager2"
+      - "zookeeper:zookeeper"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager1
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+      - HIGH_AVAILABILITY=zookeeper
+      - HIGH_AVAILABILITY_ZOOKEEPER_QUORUM=zookeeper:2181

@@ -1,0 +1,25 @@
+version: "3"
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    image: 'bitnami/kafka:2.8.0'
+    ports:
+      - '9092:9092'
+      - '9999:9999'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      # 注意这里的IP 改成自己的！！！
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://10.10.5.68:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LOG_RETENTION_HOURS=6
+      - JMX_PORT=9999
+    depends_on:
+      - zookeeper
