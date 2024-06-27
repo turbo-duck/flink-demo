@@ -1,0 +1,167 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    field.cattle.io/creatorId: u-s4mkr
+    field.cattle.io/publicEndpoints: '[{"addresses":["10.10.52.11"],"port":31538,"protocol":"TCP","serviceName":"flink-server:taskmanager-nodeport","allNodes":true},{"addresses":["10.10.52.11"],"port":30067,"protocol":"TCP","serviceName":"flink-server:taskmanager-nodeport","allNodes":true}]'
+  creationTimestamp: "2023-06-08T08:49:30Z"
+  generation: 10
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: statefulSet-flink-server-taskmanager
+  managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:field.cattle.io/creatorId: {}
+            f:field.cattle.io/publicEndpoints: {}
+          f:labels:
+            .: {}
+            f:cattle.io/creator: {}
+            f:workload.user.cattle.io/workloadselector: {}
+        f:spec:
+          f:podManagementPolicy: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:serviceName: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:cattle.io/timestamp: {}
+                f:field.cattle.io/ports: {}
+                f:field.cattle.io/publicEndpoints: {}
+              f:labels:
+                .: {}
+                f:workload.user.cattle.io/workloadselector: {}
+            f:spec:
+              f:containers:
+                k:{"name":"taskmanager"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"JOB_MANAGER_RPC_ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":6121,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":6122,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:allowPrivilegeEscalation: {}
+                    f:privileged: {}
+                    f:readOnlyRootFilesystem: {}
+                    f:runAsNonRoot: {}
+                  f:stdin: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:tty: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:terminationGracePeriodSeconds: {}
+          f:updateStrategy:
+            f:type: {}
+      manager: rancher
+      operation: Update
+      time: "2023-06-08T11:20:40Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:collisionCount: {}
+          f:currentReplicas: {}
+          f:currentRevision: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:updateRevision: {}
+          f:updatedReplicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2024-06-27T01:24:58Z"
+  name: taskmanager
+  namespace: flink-server
+  resourceVersion: "126393537"
+  uid: 9ddfa3b3-b497-43af-9bb6-af83ffa0aed3
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: statefulSet-flink-server-taskmanager
+  serviceName: taskmanager
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2023-06-08T11:19:53Z"
+        field.cattle.io/ports: '[[{"containerPort":6121,"dnsName":"taskmanager-nodeport","kind":"NodePort","name":"tm21","protocol":"TCP"},{"containerPort":6122,"dnsName":"taskmanager-nodeport","kind":"NodePort","name":"tm22","protocol":"TCP"}]]'
+        field.cattle.io/publicEndpoints: '[{"addresses":["10.10.52.11"],"allNodes":true,"port":31538,"protocol":"TCP","serviceId":"flink-server:taskmanager-nodeport"},{"addresses":["10.10.52.11"],"allNodes":true,"port":30067,"protocol":"TCP","serviceId":"flink-server:taskmanager-nodeport"}]'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: statefulSet-flink-server-taskmanager
+    spec:
+      containers:
+        - args:
+            - taskmanager
+          env:
+            - name: JOB_MANAGER_RPC_ADDRESS
+              value: jobmanager
+          image: 10.10.52.8/flink/flink
+          imagePullPolicy: Always
+          name: taskmanager
+          ports:
+            - containerPort: 6121
+              name: tm21
+              protocol: TCP
+            - containerPort: 6122
+              name: tm22
+              protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate
+status:
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: taskmanager-6fd48fdb8d
+  observedGeneration: 10
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: taskmanager-6fd48fdb8d
+  updatedReplicas: 1
+

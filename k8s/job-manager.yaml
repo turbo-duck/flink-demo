@@ -1,0 +1,177 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    field.cattle.io/creatorId: u-s4mkr
+    field.cattle.io/publicEndpoints: '[{"addresses":["10.10.52.11"],"port":31120,"protocol":"TCP","serviceName":"flink-server:jobmanager-nodeport","allNodes":true},{"addresses":["10.10.52.11"],"port":30985,"protocol":"TCP","serviceName":"flink-server:jobmanager-nodeport","allNodes":true},{"addresses":["10.10.52.11"],"port":30166,"protocol":"TCP","serviceName":"flink-server:jobmanager-nodeport","allNodes":true}]'
+  creationTimestamp: "2023-06-08T08:49:14Z"
+  generation: 21
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: statefulSet-flink-server-jobmanager
+  managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:field.cattle.io/creatorId: {}
+            f:field.cattle.io/publicEndpoints: {}
+          f:labels:
+            .: {}
+            f:cattle.io/creator: {}
+            f:workload.user.cattle.io/workloadselector: {}
+        f:spec:
+          f:podManagementPolicy: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:serviceName: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:cattle.io/timestamp: {}
+                f:field.cattle.io/ports: {}
+              f:labels:
+                .: {}
+                f:workload.user.cattle.io/workloadselector: {}
+            f:spec:
+              f:containers:
+                k:{"name":"jobmanager"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"JOB_MANAGER_RPC_ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":6123,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":6124,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":8081,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:allowPrivilegeEscalation: {}
+                    f:capabilities: {}
+                    f:privileged: {}
+                    f:readOnlyRootFilesystem: {}
+                    f:runAsNonRoot: {}
+                  f:stdin: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:tty: {}
+              f:dnsConfig: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:terminationGracePeriodSeconds: {}
+          f:updateStrategy:
+            f:type: {}
+      manager: rancher
+      operation: Update
+      time: "2023-06-08T11:20:03Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:collisionCount: {}
+          f:currentReplicas: {}
+          f:currentRevision: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:updateRevision: {}
+          f:updatedReplicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2024-06-27T01:24:45Z"
+  name: jobmanager
+  namespace: flink-server
+  resourceVersion: "126393476"
+  uid: 461079aa-69f6-423e-85b7-36fdc5c513e7
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: statefulSet-flink-server-jobmanager
+  serviceName: jobmanager
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2023-06-08T11:18:06Z"
+        field.cattle.io/ports: '[[{"containerPort":8081,"dnsName":"jobmanager-nodeport","hostPort":0,"kind":"NodePort","name":"jm81","protocol":"TCP","sourcePort":31120},{"containerPort":6123,"dnsName":"jobmanager-nodeport","hostPort":0,"kind":"NodePort","name":"jm23","protocol":"TCP"},{"containerPort":6124,"dnsName":"jobmanager-nodeport","hostPort":0,"kind":"NodePort","name":"jm24","protocol":"TCP"}]]'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: statefulSet-flink-server-jobmanager
+    spec:
+      containers:
+        - args:
+            - jobmanager
+          env:
+            - name: JOB_MANAGER_RPC_ADDRESS
+              value: jobmanager
+          image: 10.10.52.8/flink/flink
+          imagePullPolicy: Always
+          name: jobmanager
+          ports:
+            - containerPort: 8081
+              name: jm81
+              protocol: TCP
+            - containerPort: 6123
+              name: jm23
+              protocol: TCP
+            - containerPort: 6124
+              name: jm24
+              protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate
+status:
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: jobmanager-6ddbf8767b
+  observedGeneration: 21
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: jobmanager-6ddbf8767b
+  updatedReplicas: 1
+
